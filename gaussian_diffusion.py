@@ -131,7 +131,7 @@ class GaussianDiffusion(nn.Module):
         else:
             x_t = x_start
         return x_t
-    def training_losses(self, model, x_start, neighbor_sess_mo, reweight=False):
+    def training_losses1(self, model, x_start, neighbor_sess_mo, reweight=False):
         batch_size, device = x_start.size(0), x_start.device
         ts, pt = self.sample_timesteps(batch_size, device, 'importance')
         noise = th.randn_like(x_start)
@@ -147,13 +147,6 @@ class GaussianDiffusion(nn.Module):
             return t.float() * (1000.0 / self.steps)
         return t
 
-    def training_losses1(self, model1, x_start1, reweight=False):
-        batch_size, device = x_start1.size(0), x_start1.device
-        t, pt = self.sample_timesteps(batch_size, device)
-        
-        id_xt = self.q_sample(x_start1, t)
-        id_xt1 = model1(id_xt, t)
-        return id_xt1
 
     def sample_timesteps(self, batch_size, device):
         w = np.ones([self.steps])
